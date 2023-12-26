@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "485391089146",
+    "project_id": "yeh-cheez",
+    "storage_bucket": "yeh-cheez.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485391089146:android:b2d38937831a758b9ff843",
+        "android_client_info": {
+          "package_name": "com.yeh_cheez"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNAYjwjwKIwC-QtWDWUnC67xZYL3Of9eo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
