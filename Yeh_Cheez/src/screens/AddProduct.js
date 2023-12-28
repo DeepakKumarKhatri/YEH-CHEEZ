@@ -1,4 +1,12 @@
-import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
+import 'react-native-get-random-values';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  Alert,
+} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {
   TextInput,
@@ -6,9 +14,110 @@ import {
   Provider as PaperProvider,
 } from 'react-native-paper';
 import {launchImageLibrary} from 'react-native-image-picker';
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
+import {v4 as uuidv4} from 'uuid';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const AddProduct = () => {
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categories = await getCategories();
+        const categoryItems = Object.keys(categories).map(key => ({
+          label: categories[key],
+          value: categories[key],
+        }));
+        setItems(categoryItems);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const getCategories = async () => {
+    const categoriesCollection = await firestore()
+      .collection('Categories')
+      .doc('gLAfJhT9wlonzeYb2ov6')
+      .get();
+    return categoriesCollection._data;
+  };
   useEffect(() => {}, [productImage]);
+
+  // const getCircularReplacer = () => {
+  //   const seen = new WeakSet();
+  //   return (key, value) => {
+  //     if (typeof value === 'object' && value !== null) {
+  //       if (seen.has(value)) {
+  //         return;
+  //       }
+  //       seen.add(value);
+  //     }
+  //     return value;
+  //   };
+  // };
+
+  // const getData = async () => {
+  //   const usersCollection = await firestore()
+  //     .collection('Products')
+  //     .doc('w1BxcMitxV28c4mR4SqF')
+  //     .get();
+  //   console.log(
+  //     'DEEPAK DATAAAAA: ' +
+  //       JSON.stringify(usersCollection, getCircularReplacer()),
+  //   );
+  // };
+
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [items, setItems] = useState([{}]);
+
+  const productImageHandle = async imageId => {
+    try {
+      const reference = await storage()
+        .ref(`/ProductImages/${imageId}`)
+        .putFile(productImage);
+      return await storage().ref(`/ProductImages/${imageId}`).getDownloadURL();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (
+      title !== '' &&
+      price !== '' &&
+      qunatity !== '' &&
+      description !== '' &&
+      productImage !== ''
+    ) {
+      const imagePath = await productImageHandle(uuidv4());
+      const dataToSend = {
+        productTitle: title,
+        productPrice: price,
+        productQunatity: qunatity,
+        productDescription: description,
+        image: imagePath,
+        productCateogory: value,
+      };
+
+      try {
+        const productsCollection = await firestore()
+          .collection('Products')
+          .add(dataToSend);
+        const productId = productsCollection.id;
+
+        Alert.alert('Success', `Product added successfully`);
+      } catch (err) {
+        console.error(err);
+        Alert.alert('Error', 'Product not added');
+      }
+    } else {
+      Alert.alert('Error', 'Please fill all the required fields');
+    }
+  };
 
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
@@ -78,12 +187,23 @@ const AddProduct = () => {
           mode="outlined"
           label="Description"
           placeholder="Description"
+          multiline={true}
+          numberOfLines={3}
           onChangeText={text => setDescription(text)}
           value={description}
           style={styles.descriptionInput}
         />
 
-        <View>
+        <DropDownPicker
+          open={open}
+          value={value}
+          items={items}
+          setOpen={setOpen}
+          setValue={setValue}
+          setItems={setItems}
+        />
+
+        <View style={{marginTop: 20}}>
           <TouchableOpacity
             onPress={handleImagePick}
             style={styles.imageButton}>
@@ -98,7 +218,9 @@ const AddProduct = () => {
           </TouchableOpacity>
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.buttonSubmission}>
+            <TouchableOpacity
+              style={styles.buttonSubmission}
+              onPress={handleSubmit}>
               <Text style={styles.buttonText2}>Add Product</Text>
             </TouchableOpacity>
           </View>
@@ -117,14 +239,13 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderColor: '#FFA800',
     padding: 10,
-    marginBottom: 100,
+    marginBottom: 200,
   },
   inputBox: {fontWeight: 'bold', width: '98%'},
   descriptionInput: {
     fontWeight: 'bold',
     width: '98%',
-    height: '25%',
-    marginBottom: 15,
+    marginBottom: 10,
   },
   imageButton: {
     borderWidth: 1,
@@ -157,7 +278,7 @@ const styles = StyleSheet.create({
   buttonContainer: {alignSelf: 'flex-end'},
   buttonSubmission: {
     backgroundColor: '#FFA800',
-    width: '30%',
+    width: '40%',
     padding: 10,
     borderRadius: 15,
     marginTop: 20,

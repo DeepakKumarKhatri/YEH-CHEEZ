@@ -8,6 +8,9 @@ import Purchases from '../screens/Purchases';
 import Cart from '../screens/Cart';
 import Favourites from '../screens/Favourites';
 import OrderDetail from '../screens/OrderDetail';
+import DrawerNavigator from './DrawerNavigator';
+import MyProducts from '../screens/MyProducts';
+import AddProduct from '../screens/AddProduct';
 
 const Stack = createNativeStackNavigator();
 const StackNavigator = () => {

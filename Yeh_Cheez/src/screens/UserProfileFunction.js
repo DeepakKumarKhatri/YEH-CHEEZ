@@ -59,23 +59,23 @@ const UserProfileFunction = () => {
           <Text style={styles.menuContainerHeading}>Bussiness</Text>
           <UserMenuCard
             cardTitle={'My Products'}
-            functionPressed={() => navigation.navigate('MyProducts')}
+            functionPressed={() => navigation.navigate('DrawerNavigator',{screen:'MyProducts'})}
           />
           <UserMenuCard
             cardTitle={'Add Product'}
-            functionPressed={() => navigation.navigate('AddProducts')}
+            functionPressed={() => navigation.navigate('DrawerNavigator',{screen:'AddProducts'})}
           />
           <UserMenuCard
             cardTitle={'Pending Orders'}
-            functionPressed={() => navigation.navigate('OrdersPending')}
+            functionPressed={() => navigation.navigate('DrawerNavigator',{screen:'OrdersPending'})}
           />
           <UserMenuCard
             cardTitle={'Orders Done'}
-            functionPressed={() => navigation.navigate('OrdersDone')}
+            functionPressed={() => navigation.navigate('DrawerNavigator',{screen:'OrdersDone'})}
           />
           <UserMenuCard
             cardTitle={'My Purchases'}
-            functionPressed={() => navigation.navigate('Purchases')}
+            functionPressed={() => navigation.navigate('DrawerNavigator',{screen:'Purchases'})}
           />
         </View>
 
@@ -83,11 +83,11 @@ const UserProfileFunction = () => {
           <Text style={styles.menuContainerHeading}>Analytics</Text>
           <UserMenuCard
             cardTitle={'Earning Chart'}
-            functionPressed={() => navigation.navigate('EarningChart')}
+            functionPressed={() => navigation.navigate('DrawerNavigator',{screen:'EarningChart'})}
           />
           <UserMenuCard
             cardTitle={'Orders Chart'}
-            functionPressed={() => navigation.navigate('OrderAnalytics')}
+            functionPressed={() => navigation.navigate('DrawerNavigator',{screen:'OrderAnalytics'})}
           />
         </View>
       </View>
