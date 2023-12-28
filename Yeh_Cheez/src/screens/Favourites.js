@@ -1,55 +1,27 @@
 import React from 'react';
-import {
-  ScrollView,
-  Text,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-} from 'react-native';
+import {ScrollView,StyleSheet,Text,TouchableOpacity} from 'react-native';
 import CategoryCard from '../components/atoms/CategoryCard';
 import {useNavigation} from '@react-navigation/native';
-import {Badge} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const Category = () => {
+const Favourites = () => {
   const navigation = useNavigation();
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => <Text style={styles.headerTitle}>YEH-CHEEZ</Text>,
+      headerTitle: () => <Text style={headerStyle.headerTitle}>FAVOURITES</Text>,
       headerTitleAlign: 'center',
       headerBackVisible: false,
       headerLeft: () => (
-        <TouchableOpacity onPress={() => navigation.navigate('Dashboard')}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon
             name="arrow-left"
             size={30}
             color="#2D4990"
-            style={styles.icon}
+            style={headerStyle.icon}
           />
         </TouchableOpacity>
       ),
-      headerRight: () => (
-        <View style={styles.headerRight}>
-          <TouchableOpacity onPress={() => navigation.navigate('Cart')}>
-            <Badge>0</Badge>
-            <Icon
-              name="shopping-cart"
-              size={30}
-              color="#2D4990"
-              style={styles.icon}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('Favourites')}>
-            <Badge>0</Badge>
-            <Icon
-              name="heart-o"
-              size={30}
-              color="#2D4990"
-              style={styles.icon}
-            />
-          </TouchableOpacity>
-        </View>
-      ),
+      
       contentStyle: {
         backgroundColor: 'white',
         borderTopWidth: 2,
@@ -68,7 +40,9 @@ const Category = () => {
   );
 };
 
-const styles = StyleSheet.create({
+export default Favourites;
+
+const headerStyle = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#E29500',
@@ -88,4 +62,3 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
 });
-export default Category;

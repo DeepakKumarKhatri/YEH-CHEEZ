@@ -1,16 +1,16 @@
-import {ScrollView, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import CategoryRow from '../molecules/CategoryRow';
 
 const Content = () => {
   return (
-    <ScrollView
+    <View
       style={styles.container}
       contentContainerStyle={styles.scrollBottom}
       showsVerticalScrollIndicator={false}>
       <CategoryRow title={'Tailor1'} />
       <CategoryRow title={'Tailor2'} />
       <CategoryRow title={'Tailor3'} />
-    </ScrollView>
+    </View>
   );
 };
 

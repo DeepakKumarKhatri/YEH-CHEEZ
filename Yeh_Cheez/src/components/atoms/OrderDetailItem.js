@@ -1,35 +1,18 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
-import Icon from 'react-native-vector-icons/dist/FontAwesome5';
 
-const CartItem = () => {
-  const [currentValue, setCurrentValue] = useState(0);
-  const [productPrice, setProductPrice] = useState(400);
+const OrderDetailItem = () => {
   return (
     <View style={styles.mainContainer}>
       <Text style={styles.tableContentRow}>Item1</Text>
       <View style={styles.iconParent}>
-        <TouchableOpacity
-          style={styles.iconContainer}
-          onPress={() =>
-            currentValue >= 1 ? setCurrentValue(currentValue - 1) : 0
-          }>
-          <Icon name="minus" size={16} color="white" />
-        </TouchableOpacity>
         <Text
           style={[styles.tableContentRow, {paddingRight: 8, paddingLeft: 8}]}>
-          {currentValue}
+          0
         </Text>
-        <TouchableOpacity
-          style={styles.iconContainer}
-          onPress={() => {
-            setCurrentValue(currentValue + 1);
-          }}>
-          <Icon name="plus" size={16} color="white" />
-        </TouchableOpacity>
       </View>
       <Text style={[styles.tableContentRow, {color: '#E29500'}]}>
-        {productPrice}
+        500
       </Text>
     </View>
   );
@@ -46,4 +29,4 @@ const styles = StyleSheet.create({
   iconParent: {flexDirection: 'row'},
 });
 
-export default CartItem;
+export default OrderDetailItem;

@@ -1,9 +1,11 @@
+import {useNavigation} from '@react-navigation/native';
 import {useState, useEffect} from 'react';
 import {ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import {DataTable} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const OrdersDone = () => {
+  const navigation = useNavigation();
   const [page, setPage] = useState(0);
   const [numberOfItemsPerPageList] = useState([2, 3, 4, 6]);
   const [itemsPerPage, onItemsPerPageChange] = useState(
@@ -85,7 +87,9 @@ const OrdersDone = () => {
               {item.fat}
             </DataTable.Cell>
             <DataTable.Cell style={{justifyContent: 'flex-end'}}>
-              <TouchableOpacity style={[styles.roundIcon, styles.editIcon]}>
+              <TouchableOpacity
+                style={[styles.roundIcon, styles.editIcon]}
+                onPress={() => navigation.navigate('OrderDetail')}>
                 <Icon name="eye" size={20} color="#FFFFFF" />
               </TouchableOpacity>
             </DataTable.Cell>

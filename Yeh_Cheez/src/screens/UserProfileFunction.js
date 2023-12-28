@@ -9,9 +9,14 @@ import {
 import Icon from 'react-native-vector-icons/dist/FontAwesome5';
 import UserMenuCard from '../components/atoms/UserMenuCard';
 import {useNavigation} from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
+import {Context} from '../context/Context';
+import React from 'react';
 
 const UserProfileFunction = () => {
   const navigation = useNavigation();
+  const {user, setUser} = React.useContext(Context);
+
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.cardSectionContainer}>
@@ -21,7 +26,12 @@ const UserProfileFunction = () => {
         />
         <View style={styles.userInfoContainer}>
           <Text style={styles.containerText}>Mujtaba Khan</Text>
-          <TouchableOpacity style={styles.iconHolder}>
+          <TouchableOpacity
+            style={styles.iconHolder}
+            onPress={() => {
+              auth().signOut();
+              setUser(null);
+            }}>
             <Icon name="arrow-left" size={25} color="#2D4990" />
           </TouchableOpacity>
           <Text style={styles.containerText}>Balance: 28,390</Text>
