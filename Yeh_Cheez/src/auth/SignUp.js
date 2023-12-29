@@ -22,7 +22,8 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [toggleIcon, setToggleIcon] = useState('times');
   const [toggleState, setToggleState] = useState(false);
-  const {user, setUser} = useContext(Context);
+  const {userAuth} = useContext(Context);
+  const [user, setUser] = userAuth;
 
   const handleSignup = () => {
     if (

@@ -1,14 +1,48 @@
-import React from 'react';
-import {ScrollView,StyleSheet,Text,TouchableOpacity} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import {ScrollView, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import CategoryCard from '../components/atoms/CategoryCard';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import firestore from '@react-native-firebase/firestore';
+import {Context} from '../context/Context';
 
 const Favourites = () => {
   const navigation = useNavigation();
+  const {userAuth, favCount} = useContext(Context);
+  const [user, setUser] = userAuth;
+  const [fav, setFav] = favCount;
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        await getProducts();
+      } catch (error) {
+        console.error('Error fetching product:', error);
+      }
+    };
+    fetchProducts();
+  }, [fav]);
+
+  const getProducts = async () => {
+    try {
+      const productCollection = await firestore().collection('Products').get();
+      const products = productCollection.docs.map(doc => doc.data());
+      const userDoc = await firestore().collection('Users').doc(user.uid).get();
+      const userData = userDoc.data();
+      const userFavorites = userData.favorites || [];
+      const favoriteProducts = products.filter(product =>
+        userFavorites.includes(product.productTitle),
+      );
+      setProducts(favoriteProducts);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: () => <Text style={headerStyle.headerTitle}>FAVOURITES</Text>,
+      headerTitle: () => (
+        <Text style={headerStyle.headerTitle}>FAVOURITES</Text>
+      ),
       headerTitleAlign: 'center',
       headerBackVisible: false,
       headerLeft: () => (
@@ -21,7 +55,7 @@ const Favourites = () => {
           />
         </TouchableOpacity>
       ),
-      
+
       contentStyle: {
         backgroundColor: 'white',
         borderTopWidth: 2,
@@ -32,10 +66,16 @@ const Favourites = () => {
   }, [navigation]);
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
-      <CategoryCard />
-      <CategoryCard />
-      <CategoryCard />
-      <CategoryCard />
+      {products.map(product => (
+        <CategoryCard
+          id={product.productTitle}
+          title={product.productTitle}
+          price={product.productPrice}
+          description={product.productDescription}
+          category={product.productCateogory}
+          image={product.image}
+        />
+      ))}
     </ScrollView>
   );
 };

@@ -9,9 +9,37 @@ import React from 'react';
 import CartItem from '../components/atoms/CartItem';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import firestore from '@react-native-firebase/firestore';
+import {useContext, useState, useEffect} from 'react';
+import { Context } from '../context/Context';
+import { createContext } from "react";
+export const CartContext = createContext('');
 
 const Cart = () => {
   const navigation = useNavigation();
+  const {userAuth, cartCount} = useContext(Context);
+  const [user, setUser] = userAuth;
+  const [cartItems, setCartItems] = cartCount;
+  const [cartTempItems, setCartTempItems] = useState([]);
+  const [totalAmount, setTotalAmount] = useState(0);
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const userDoc = await firestore().collection('Users').doc(user.uid).get();
+        const userData = userDoc.data();
+        const userCart = userData.cart || [];
+        const cartTotalAmount = userCart.reduce((total, item) => total + (item.quantity * item.totalAmount), 0);
+        setTotalAmount(cartTotalAmount);
+        setCartTempItems(userCart);
+      } catch (error) {
+        console.error('Error fetching cart:', error);
+      }
+    };
+
+    fetchCart();
+  }, [cartItems, user.uid]);
+
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () => <Text style={headerStyle.headerTitle}>CART</Text>,
@@ -37,25 +65,21 @@ const Cart = () => {
     });
   }, [navigation]);
   return (
+    <CartContext.Provider value={{amount: [totalAmount, setTotalAmount], items: [cartTempItems, setCartTempItems]}}>
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.mainContainer}>
         <View style={{margin: 20}}>
           <Text style={styles.title}>YOUR CART</Text>
         </View>
-
         <View style={styles.itemContainer}>
           <View style={styles.initialHeader}>
             <Text style={styles.tableHeaderRow}>Name</Text>
-            <View style={{flexDirection:'row'}}>
             <Text style={styles.tableHeaderRow}>Quantity</Text>
             <Text style={[styles.tableHeaderRow,{paddingLeft:75}]}>Price</Text>
-            </View>
           </View>
-
-          <CartItem />
-          <CartItem />
-          <CartItem />
-          <CartItem />
+          {cartTempItems.map((item, index) => (
+          <CartItem id={index} title={item.productTitle} price={item.totalAmount} quantity={item.quantity} />
+          ))}
         </View>
 
         <View style={styles.footerContainer}>
@@ -64,17 +88,20 @@ const Cart = () => {
             <Text style={styles.footerText1}>Rs</Text>
           </View>
           <View>
-            <Text style={styles.footerText2}>7</Text>
-            <Text style={styles.footerText2}>10,000</Text>
+            <Text style={styles.footerText2}>{cartItems}</Text>
+            <Text style={styles.footerText2}>{totalAmount}</Text>
           </View>
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Checkout', {
+            amount: totalAmount
+          })}>
             <Text style={styles.buttonText}>Place Order</Text>
           </TouchableOpacity>
         </View>
       </View>
     </ScrollView>
+    </CartContext.Provider>
   );
 };
 

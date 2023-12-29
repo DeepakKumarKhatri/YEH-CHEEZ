@@ -17,7 +17,8 @@ const Login = ({navigation,route}) => {
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [toggleIcon, setToggleIcon] = useState('times');
-  const {user, setUser} = useContext(Context);
+  const {userAuth} = useContext(Context);
+  const [user, setUser] = userAuth;
 
   const handleLogin = () => {
     if (userEmail != '' && userPassword != '') {
@@ -125,6 +126,7 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     paddingLeft: 15,
     marginTop: 30,
+    color: 'black'
   },
   iconHolder: {
     borderWidth: 1,
