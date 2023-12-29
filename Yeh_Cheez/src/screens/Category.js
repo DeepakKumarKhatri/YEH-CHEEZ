@@ -1,21 +1,48 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   ScrollView,
   Text,
   StyleSheet,
   View,
   TouchableOpacity,
+  FlatList,
 } from 'react-native';
 import CategoryCard from '../components/atoms/CategoryCard';
 import {useNavigation} from '@react-navigation/native';
 import {Badge} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import firestore from '@react-native-firebase/firestore';
+import { useContext } from 'react';
+import { Context } from '../context/Context';
 
-const Category = () => {
+const Category = ({route}) => {
+  const {cartCount, favCount} = useContext(Context);
+  const [cartItems, setCartItems] = cartCount;
+  const [fav, setFav] = favCount;
   const navigation = useNavigation();
-  React.useLayoutEffect(() => {
+  const [products, setProducts] = React.useState([{}]);
+  React.useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        await getProducts();
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+  const getProducts = async () => {
+    const productCollection = await firestore()
+      .collection('Products')
+      .where('productCateogory', '==', route.params.category)
+      .get();
+    setProducts(productCollection.docs.map(doc => doc.data()));
+  };
+
+  useEffect(() => {
     navigation.setOptions({
-      headerTitle: () => <Text style={styles.headerTitle}>YEH-CHEEZ</Text>,
+      headerTitle: () => <Text style={styles.headerTitle}>{route.params.category}</Text>,
       headerTitleAlign: 'center',
       headerBackVisible: false,
       headerLeft: () => (
@@ -31,7 +58,7 @@ const Category = () => {
       headerRight: () => (
         <View style={styles.headerRight}>
           <TouchableOpacity onPress={() => navigation.navigate('Cart')}>
-            <Badge>0</Badge>
+            <Badge>{cartItems}</Badge>
             <Icon
               name="shopping-cart"
               size={30}
@@ -40,7 +67,7 @@ const Category = () => {
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('Favourites')}>
-            <Badge>0</Badge>
+            <Badge>{fav}</Badge>
             <Icon
               name="heart-o"
               size={30}
@@ -57,13 +84,19 @@ const Category = () => {
       },
       headerShadowVisible: false,
     });
-  }, [navigation]);
+  }, [navigation, cartItems, fav]);
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
-      <CategoryCard />
-      <CategoryCard />
-      <CategoryCard />
-      <CategoryCard />
+      {products.map(product => (
+        <CategoryCard
+          id={product.productTitle}
+          title={product.productTitle}
+          price={product.productPrice}
+          description={product.productDescription}
+          category={product.productCateogory}
+          image={product.image}
+        />
+      ))}
     </ScrollView>
   );
 };

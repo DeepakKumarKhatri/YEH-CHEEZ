@@ -3,75 +3,69 @@ import TitleCard from '../atoms/TitleCard';
 import {FlatList, StyleSheet, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useNavigation} from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
+import { useEffect, useState } from 'react';
 
-const products = [
-  {
-    id: 1,
-    title: 'LAWRENCEPUR1',
-    price: '1000',
-    rating: 5,
-    image: require('../../assets/images/suit.png'),
-  },
-  {
-    id: 2,
-    title: 'LAWRENCEPUR2',
-    price: '1000',
-    rating: 4,
-    image: require('../../assets/images/suit.png'),
-  },
-  {
-    id: 3,
-    title: 'LAWRENCEPUR3',
-    price: '1000',
-    rating: 5,
-    image: require('../../assets/images/suit.png'),
-  },
-  {
-    id: 4,
-    title: 'LAWRENCEPUR4',
-    price: '1000',
-    rating: 5,
-    image: require('../../assets/images/suit.png'),
-  },
-  {
-    id: 5,
-    title: 'LAWRENCEPUR5',
-    price: '1000',
-    rating: 5,
-    image: require('../../assets/images/suit.png'),
-  },
-];
 const CategoryRow = ({title}) => {
   const navigation = useNavigation();
+  const [products, setProducts] = useState([{}]);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        await getProducts();
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+  const getProducts = async () => {
+    const productCollection = await firestore()
+      .collection('Products')
+      .where('productCateogory', '==', title)
+      .get();
+      setProducts(productCollection.docs.map(doc => doc.data()));
+  };
   return (
+    <>
+    {products.length == 0 ? 
+    <></>
+    :
     <View>
       <View style={styles.titleRow}>
         <Text variant="displaySmall" style={styles.heading}>
           {title}
         </Text>
-        <Button mode="text" onPress={() => navigation.navigate('Category')}>
+        <Button mode="text" onPress={() => navigation.navigate('Category', {
+          category: title
+        })}>
           <Text style={styles.btnText}>View More </Text>
           <Icon name="angle-right" size={14} color="#2D4990" />
           <Icon name="angle-right" size={14} color="#2D4990" />
         </Button>
       </View>
       <View style={styles.content}>
+        {products.length != 0 ? 
         <FlatList
           data={products}
           renderItem={({item}) => (
             <TitleCard
-              title={item.title}
-              price={item.price}
-              rating={item.rating}
+              title={item.productTitle}
+              price={item.productPrice}
+              rating={3}
               image={item.image}
             />
           )}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.productTitle}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
         />
+        :null}
       </View>
     </View>
+    }
+    </>
   );
 };
 

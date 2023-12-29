@@ -8,9 +8,8 @@ import Purchases from '../screens/Purchases';
 import Cart from '../screens/Cart';
 import Favourites from '../screens/Favourites';
 import OrderDetail from '../screens/OrderDetail';
-import DrawerNavigator from './DrawerNavigator';
-import MyProducts from '../screens/MyProducts';
-import AddProduct from '../screens/AddProduct';
+import Checkout from '../screens/Checkout';
+import CheckOutModal from '../components/organism/Modal';
 
 const Stack = createNativeStackNavigator();
 const StackNavigator = () => {
@@ -25,6 +24,8 @@ const StackNavigator = () => {
       <Stack.Screen name="Cart" component={Cart} />
       <Stack.Screen name="Favourites" component={Favourites} />
       <Stack.Screen name="OrderDetail" component={OrderDetail} />
+      <Stack.Screen name="Checkout" component={Checkout} />
+      <Stack.Screen name="CheckOutModal" component={CheckOutModal} />
     </Stack.Navigator>
   );
 };

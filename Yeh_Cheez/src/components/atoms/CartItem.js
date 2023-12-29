@@ -1,33 +1,94 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import Icon from 'react-native-vector-icons/dist/FontAwesome5';
+import firestore from '@react-native-firebase/firestore';
+import {Context} from '../../context/Context';
+import { CartContext } from '../../screens/Cart';
 
-const CartItem = () => {
-  const [currentValue, setCurrentValue] = useState(0);
-  const [productPrice, setProductPrice] = useState(400);
+const CartItem = ({title, quantity, price}) => {
+  const [currentValue, setCurrentValue] = useState(quantity);
+  const [productPrice, setProductPrice] = useState(price);
+  const {userAuth, cartCount} = useContext(Context);
+  const [cartItems, setCartItems] = cartCount;
+
+
+  const {amount, items} = useContext(CartContext);
+
+  const [totalAmount, setTotalAmount] = amount;
+  const [cartTempItems, setCartTempItems] = items;
+
+  const [user, setUser] = userAuth;
+  
+  const updateQuantityInFirestore = async (newQuantity) => {
+    try {
+      const userDoc = await firestore().collection('Users').doc(user.uid).get();
+      const userData = userDoc.data();
+      const currentCart = userData.cart;
+      if (newQuantity === 0) {
+        // If the new quantity is zero, remove the item from the cart
+        const updatedCart = currentCart.filter(item => item.productTitle !== title);
+        await firestore().collection('Users').doc(user.uid).update({
+          cart: updatedCart,
+        });
+        setCartItems(cartItems - 1);
+      } else {
+      const productCollection = await firestore()
+        .collection('Products')
+        .where('productTitle', '==', title)
+        .get();
+      await firestore()
+        .collection('Users')
+        .doc(user.uid)
+        .update({
+          cart: currentCart.map(item =>
+            item.productTitle === title ? {...item, quantity: newQuantity, totalAmount:  newQuantity * productCollection.docs[0].data().productPrice} : item,
+          ),
+        });
+        setProductPrice(newQuantity * productCollection.docs[0].data().productPrice);
+        const userDoc = await firestore().collection('Users').doc(user.uid).get();
+        const userData = userDoc.data();
+        const userCart = userData.cart || [];
+        const cartTotalAmount = userCart.reduce((total, item) => total + (item.quantity * item.totalAmount), 0);
+        setTotalAmount(cartTotalAmount);
+        setCartTempItems(userCart);
+      }
+    } catch (error) {
+      console.error('Error updating quantity in Firestore:', error);
+    }
+  };
   return (
     <View style={styles.mainContainer}>
-      <Text style={styles.tableContentRow}>Item1</Text>
+      <Text style={styles.tableContentRow}>{title}</Text>
+
       <View style={styles.iconParent}>
         <TouchableOpacity
           style={styles.iconContainer}
-          onPress={() =>
-            currentValue >= 1 ? setCurrentValue(currentValue - 1) : 0
-          }>
+          onPress={() => {
+            const newQuantity = currentValue >= 1 ? currentValue - 1 : 0;
+            setCurrentValue(newQuantity);
+            updateQuantityInFirestore(newQuantity);
+            setCartItems(cartItems - 1);
+          }}>
           <Icon name="minus" size={16} color="white" />
         </TouchableOpacity>
+
         <Text
           style={[styles.tableContentRow, {paddingRight: 8, paddingLeft: 8}]}>
           {currentValue}
         </Text>
+
         <TouchableOpacity
           style={styles.iconContainer}
           onPress={() => {
-            setCurrentValue(currentValue + 1);
+            const newQuantity = currentValue + 1;
+            setCurrentValue(newQuantity);
+            updateQuantityInFirestore(newQuantity);
+            setCartItems(cartItems + 1);
           }}>
           <Icon name="plus" size={16} color="white" />
         </TouchableOpacity>
       </View>
+
       <Text style={[styles.tableContentRow, {color: '#E29500'}]}>
         {productPrice}
       </Text>
@@ -43,7 +104,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 10,
   },
-  iconParent: {flexDirection: 'row'},
+  iconParent: {flexDirection: 'row', justifyContent: 'flex-end'},
 });
 
 export default CartItem;

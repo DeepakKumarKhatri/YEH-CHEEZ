@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -12,17 +12,37 @@ import Content from '../components/organism/Content';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Badge} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
+import { Context } from '../context/Context';
+import firestore from '@react-native-firebase/firestore';
 
 const Dashboard = () => {
+  const {userAuth, cartCount, favCount} = useContext(Context);
+  const [cartItems, setCartItems] = cartCount;
+  const [user, setUser] = userAuth;
+  const [fav, setFav] = favCount;
   const navigation = useNavigation();
-  React.useLayoutEffect(() => {
+
+  useEffect(() => {
+    const setCart = async () => {
+      const userDoc = await firestore().collection('Users').doc(user.uid).get();
+      const userData = userDoc.data();
+      const currentCart = userData.cart || [];
+      const currentFav = userData.favorites || [];
+      const totalQuantity = currentCart.reduce((total, item) => total + item.quantity, 0);
+      setCartItems(totalQuantity);
+      setFav(currentFav.length);
+    } 
+    setCart();
+  }, []);
+
+  useEffect(() => {
     navigation.setOptions({
       headerTitle: () => <Text style={styles.headerTitle}>YEH-CHEEZ</Text>,
       headerTitleAlign: 'center',
       headerRight: () => (
         <View style={styles.headerRight}>
           <TouchableOpacity onPress={() => navigation.navigate('Cart')}>
-            <Badge>0</Badge>
+            <Badge>{cartItems}</Badge>
             <Icon
               name="shopping-cart"
               size={30}
@@ -31,7 +51,7 @@ const Dashboard = () => {
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('Favourites')}>
-            <Badge>0</Badge>
+            <Badge>{fav}</Badge>
             <Icon
               name="heart-o"
               size={30}
@@ -48,7 +68,7 @@ const Dashboard = () => {
       },
       headerShadowVisible: false,
     });
-  }, [navigation]);
+  }, [navigation, cartItems, fav]);
 
   return (
     <SafeAreaView style={styles.container}>

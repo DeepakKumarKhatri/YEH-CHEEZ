@@ -12,15 +12,15 @@ const Stack = createNativeStackNavigator();
 
 const App = () => {
   const [user, setUser] = useState(null);
+  const [cartItems, setCartItems] = useState(0);
+  const [fav, setFav] = useState(0);
   useEffect(() => {
     auth().onAuthStateChanged(user => {
       setUser(user);
     });
-    // auth().signOut();
-    // setUser(null);
   }, []);
   return (
-    <Context.Provider value={{user, setUser}}>
+    <Context.Provider value={{userAuth: [user, setUser], cartCount: [cartItems, setCartItems], favCount: [fav, setFav]}}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName={user === null ? 'Login' : 'Deepak'}>
           {user == null ? (
