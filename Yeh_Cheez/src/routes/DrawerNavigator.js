@@ -8,11 +8,12 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import MyProducts from '../screens/MyProducts';
 import AddProduct from '../screens/AddProduct';
 import OrdersPending from '../screens/OrdersPending';
-import Purchases from '../screens/Purchases';
 import OrderAnalytics from '../screens/OrderAnalytics';
 import EarningAnalytics from '../screens/EarningAnalytics';
 import {Image, View, Text, StyleSheet} from 'react-native';
 import OrdersDone from '../screens/OrdersDone';
+import {Context} from '../context/Context';
+import auth from '@react-native-firebase/auth';
 
 const Drawer = createDrawerNavigator();
 
@@ -36,6 +37,7 @@ const CustomDrawerItem = ({label, icon, onPress, focused}) => (
 );
 
 const CustomDrawerContent = ({navigation, state, ...props}) => {
+  const {user, setUser} = React.useContext(Context);
   const focusedRouteName = state.routeNames[state.index] || 'MyProducts';
 
   return (
@@ -80,7 +82,10 @@ const CustomDrawerContent = ({navigation, state, ...props}) => {
       <CustomDrawerItem
         label="Logout"
         icon="arrow-left"
-        onPress={() => navigation.navigate('Logout')}
+        onPress={() => {
+          auth().signOut();
+          setUser(null);
+        }}
         focused={focusedRouteName === 'Logout'}
       />
     </DrawerContentScrollView>

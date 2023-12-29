@@ -41,7 +41,7 @@ const products = [
     image: require('../../assets/images/suit.png'),
   },
 ];
-const CategoryRow = ({title}) => {
+const CategoryRow = ({title,price,rating,imageSource}) => {
   const navigation = useNavigation();
   return (
     <View>

@@ -1,3 +1,4 @@
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,22 +11,56 @@ import Icon from 'react-native-vector-icons/dist/FontAwesome5';
 import UserMenuCard from '../components/atoms/UserMenuCard';
 import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 import {Context} from '../context/Context';
-import React from 'react';
 
 const UserProfileFunction = () => {
+  const [userName, setUserName] = useState('');
+  const [userBalance, setUserBalance] = useState(0);
+  const [userProfileImage, setUserProfileImage] = useState(
+    require('../assets/images/defaultuser.png'),
+  );
   const navigation = useNavigation();
   const {user, setUser} = React.useContext(Context);
 
+  useEffect(() => {
+    fetchUserProfile();
+  });
+
+  const fetchUserProfile = async () => {
+    try {
+      const user = auth().currentUser;
+      if (user) {
+        const userDoc = await firestore()
+          .collection('Users')
+          .doc(user.uid)
+          .get();
+
+        if (userDoc.exists) {
+          const userData = userDoc.data();
+          setUserName(userData.firstName + ' ' + userData.lastName || '');
+          setUserBalance(userData.balance);
+
+          const profileImageRef = storage().ref(`ProfileImages/${user.uid}`);
+          const url = await profileImageRef.getDownloadURL();
+          setUserProfileImage({uri: url});
+        } else {
+          console.warn('User document not found');
+        }
+      } else {
+        console.warn('User not authenticated');
+      }
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+    }
+  };
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.cardSectionContainer}>
-        <Image
-          source={require('../assets/images/Rectangle7.png')}
-          style={styles.userImage}
-        />
+        <Image source={userProfileImage} style={styles.userImage} />
         <View style={styles.userInfoContainer}>
-          <Text style={styles.containerText}>Mujtaba Khan</Text>
+          <Text style={styles.containerText}>{userName}</Text>
           <TouchableOpacity
             style={styles.iconHolder}
             onPress={() => {
@@ -34,7 +69,7 @@ const UserProfileFunction = () => {
             }}>
             <Icon name="arrow-left" size={25} color="#2D4990" />
           </TouchableOpacity>
-          <Text style={styles.containerText}>Balance: 28,390</Text>
+          <Text style={styles.containerText}>Balance: {userBalance}</Text>
         </View>
       </View>
 
@@ -47,7 +82,7 @@ const UserProfileFunction = () => {
           />
           <UserMenuCard
             cardTitle={'Update Profile'}
-            functionPressed={() => navigation.navigate('UserProfile')}
+            functionPressed={() => navigation.navigate('UpdateProfile')}
           />
           <UserMenuCard
             cardTitle={'Update Password'}
@@ -59,23 +94,33 @@ const UserProfileFunction = () => {
           <Text style={styles.menuContainerHeading}>Bussiness</Text>
           <UserMenuCard
             cardTitle={'My Products'}
-            functionPressed={() => navigation.navigate('DrawerNavigator',{screen:'MyProducts'})}
+            functionPressed={() =>
+              navigation.navigate('DrawerNavigator', {screen: 'MyProducts'})
+            }
           />
           <UserMenuCard
             cardTitle={'Add Product'}
-            functionPressed={() => navigation.navigate('DrawerNavigator',{screen:'AddProducts'})}
+            functionPressed={() =>
+              navigation.navigate('DrawerNavigator', {screen: 'AddProducts'})
+            }
           />
           <UserMenuCard
             cardTitle={'Pending Orders'}
-            functionPressed={() => navigation.navigate('DrawerNavigator',{screen:'OrdersPending'})}
+            functionPressed={() =>
+              navigation.navigate('DrawerNavigator', {screen: 'OrdersPending'})
+            }
           />
           <UserMenuCard
             cardTitle={'Orders Done'}
-            functionPressed={() => navigation.navigate('DrawerNavigator',{screen:'OrdersDone'})}
+            functionPressed={() =>
+              navigation.navigate('DrawerNavigator', {screen: 'OrdersDone'})
+            }
           />
           <UserMenuCard
             cardTitle={'My Purchases'}
-            functionPressed={() => navigation.navigate('DrawerNavigator',{screen:'Purchases'})}
+            functionPressed={() =>
+              navigation.navigate('DrawerNavigator', {screen: 'Purchases'})
+            }
           />
         </View>
 
@@ -83,11 +128,15 @@ const UserProfileFunction = () => {
           <Text style={styles.menuContainerHeading}>Analytics</Text>
           <UserMenuCard
             cardTitle={'Earning Chart'}
-            functionPressed={() => navigation.navigate('DrawerNavigator',{screen:'EarningChart'})}
+            functionPressed={() =>
+              navigation.navigate('DrawerNavigator', {screen: 'EarningChart'})
+            }
           />
           <UserMenuCard
             cardTitle={'Orders Chart'}
-            functionPressed={() => navigation.navigate('DrawerNavigator',{screen:'OrderAnalytics'})}
+            functionPressed={() =>
+              navigation.navigate('DrawerNavigator', {screen: 'OrderAnalytics'})
+            }
           />
         </View>
       </View>

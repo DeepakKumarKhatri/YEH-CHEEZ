@@ -6,6 +6,21 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 const OrdersDone = () => {
   const navigation = useNavigation();
+  useEffect(() => {
+    navigation.setOptions({
+      title: 'ORDERS',
+      headerTitleAlign: 'center',
+      headerStyle: {
+        backgroundColor: 'white',
+        height: 80,
+      },
+      headerTintColor: '#2D4990', 
+      headerTitleStyle: {
+        fontSize: 32,
+        color: '#2D4990',
+      }
+    });
+  }, [navigation]);
   const [page, setPage] = useState(0);
   const [numberOfItemsPerPageList] = useState([2, 3, 4, 6]);
   const [itemsPerPage, onItemsPerPageChange] = useState(

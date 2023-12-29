@@ -28,27 +28,30 @@ const SignUp = () => {
     if (
       firstName !== '' &&
       lastName !== '' &&
-      userEmail != '' &&
-      userPassword != ''
+      userEmail !== '' &&
+      userPassword !== ''
     ) {
       if (userPassword === confirmPassword) {
         if (toggleState) {
           auth()
             .createUserWithEmailAndPassword(userEmail, userPassword)
             .then(userCredential => {
+              const newUser = userCredential.user;
               Keyboard.dismiss();
               setUserEmail('');
               setUserPassword('');
+
               firestore()
                 .collection('Users')
-                .add({
+                .doc(newUser.uid)
+                .set({
                   firstName: firstName,
                   lastName: lastName,
-                  email: userEmail,
+                  balance: 0,
                 })
                 .then(() => {
                   Alert.alert('Success', 'Signed up successfully!');
-                  setUser(userCredential.user);
+                  setUser(newUser);
                 })
                 .catch(error => Alert.alert('Error', error.message));
             })
@@ -60,7 +63,7 @@ const SignUp = () => {
         Alert.alert('Error', 'Password did not match!');
       }
     } else {
-      Alert.alert('Error', 'Please fill fields!');
+      Alert.alert('Error', 'Please fill in all fields!');
     }
   };
 

@@ -8,7 +8,6 @@ import {
 import React from 'react';
 import CartItem from '../components/atoms/CartItem';
 import {useNavigation} from '@react-navigation/native';
-import {Badge} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Cart = () => {
@@ -47,8 +46,10 @@ const Cart = () => {
         <View style={styles.itemContainer}>
           <View style={styles.initialHeader}>
             <Text style={styles.tableHeaderRow}>Name</Text>
+            <View style={{flexDirection:'row'}}>
             <Text style={styles.tableHeaderRow}>Quantity</Text>
-            <Text style={styles.tableHeaderRow}>Price</Text>
+            <Text style={[styles.tableHeaderRow,{paddingLeft:75}]}>Price</Text>
+            </View>
           </View>
 
           <CartItem />

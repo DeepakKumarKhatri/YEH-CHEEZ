@@ -1,8 +1,26 @@
 import { ScrollView, StyleSheet, View } from "react-native";
 import Chart from "../components/molecules/Chart";
 import { Text } from "react-native-paper";
+import {useNavigation} from '@react-navigation/native';
+import React, {useEffect} from 'react';
 
 const OrderAnalytics = () => {
+    const navigation = useNavigation();
+  useEffect(() => {
+    navigation.setOptions({
+      title: 'ORDERS ANALYTICS',
+      headerTitleAlign: 'center',
+      headerStyle: {
+        backgroundColor: 'white',
+        height: 80,
+      },
+      headerTintColor: '#2D4990',
+      headerTitleStyle: {
+        fontSize: 27,
+        color: '#2D4990',
+      },
+    });
+  }, [navigation]);
     return(
         <ScrollView style={styles.container}>
             <Text style={styles.heading}>Orders</Text>

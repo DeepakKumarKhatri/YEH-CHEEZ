@@ -5,13 +5,6 @@
 import {AppRegistry} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
-import Login from './src/auth/Login';
-import SignUp from './src/auth/SignUp';
-
-import Banner from './src/components/atoms/Banner';
-import Content from './src/components/organism/Content';
-import Dashboard from './src/screens/Dashboard';
-import Onboarding from './src/screens/Onboarding';
 import {MD3LightTheme as DefaultTheme, PaperProvider} from 'react-native-paper';
 
 const theme = {

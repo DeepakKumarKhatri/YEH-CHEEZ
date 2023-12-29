@@ -18,26 +18,12 @@ import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import {v4 as uuidv4} from 'uuid';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { useNavigation } from '@react-navigation/native';
 
-const AddProduct = () => {
-  const navigation = useNavigation();
+const UpdateProduct = ({route, navigation}) => {
   useEffect(() => {
-    navigation.setOptions({
-      title: 'Add PRODUCT',
-      headerTitleAlign: 'center',
-      headerStyle: {
-        backgroundColor: 'white',
-        height: 80,
-      },
-      headerTintColor: '#2D4990', 
-      headerTitleStyle: {
-        fontSize: 32,
-        color: '#2D4990',
-      },
-    });
-  }, [navigation]);
-  
+    getData();
+  }, []);
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -64,9 +50,60 @@ const AddProduct = () => {
   };
   useEffect(() => {}, [productImage]);
 
+  const getCircularReplacer = () => {
+    const seen = new WeakSet();
+    return (key, value) => {
+      if (typeof value === 'object' && value !== null) {
+        if (seen.has(value)) {
+          return;
+        }
+        seen.add(value);
+      }
+      return value;
+    };
+  };
+
+  const getData = async () => {
+    try {
+      const productsCollection = await firestore().collection('Products').get();
+      const products = [];
+
+      productsCollection.docs.forEach(doc => {
+        const productData = doc.data();
+        products.push({
+          id: doc.id,
+          ...productData,
+        });
+      });
+
+      const matchingProduct = products.find(
+        product => product.productTitle === route.params.title,
+      );
+
+      if (matchingProduct) {
+        setTitle(matchingProduct.productTitle || '');
+        setPrice(matchingProduct.productPrice || '');
+        setQunatity(matchingProduct.productQunatity || '');
+        setDescription(matchingProduct.productDescription || '');
+        setValue(matchingProduct.productCateogory || null);
+        setProductImage(matchingProduct.image || '');
+      } else {
+        console.warn('Product not found');
+      }
+    } catch (error) {
+      console.error('Error fetching product details:', error);
+    }
+  };
+
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
   const [items, setItems] = useState([{}]);
+  const [title, setTitle] = useState(route.params.title);
+  const [price, setPrice] = useState(route.params.price.toString());
+  const [qunatity, setQunatity] = useState(route.params.quantity.toString());
+  const [description, setDescription] = useState(route.params.description);
+  const [value, setValue] = useState(route.params.category);
+  const [productImage, setProductImage] = useState('');
+  const [beforeImage, setBeforeImage] = useState('Add Image');
 
   const productImageHandle = async imageId => {
     try {
@@ -79,7 +116,7 @@ const AddProduct = () => {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleUpdate = async () => {
     if (
       title !== '' &&
       price !== '' &&
@@ -88,37 +125,41 @@ const AddProduct = () => {
       productImage !== ''
     ) {
       const imagePath = await productImageHandle(uuidv4());
-      const dataToSend = {
-        productTitle: title,
-        productPrice: price,
-        productQunatity: qunatity,
-        productDescription: description,
-        image: imagePath,
-        productCateogory: value,
-      };
-
+  
       try {
-        const productsCollection = await firestore()
+        const querySnapshot = await firestore()
           .collection('Products')
-          .add(dataToSend);
-        const productId = productsCollection.id;
-
-        Alert.alert('Success', `Product added successfully`);
+          .where('productTitle', '==', route.params.title)
+          .get();
+  
+        if (!querySnapshot.empty) {
+          const documentId = querySnapshot.docs[0].id;
+  
+          await firestore()
+            .collection('Products')
+            .doc(documentId)
+            .update({
+              productTitle: title,
+              productPrice: price,
+              productQunatity: qunatity,
+              productDescription: description,
+              image: imagePath,
+              productCateogory: value,
+            });
+  
+          Alert.alert('Success', `Product updated successfully`);
+        } else {
+          console.warn('Product not found');
+        }
       } catch (err) {
         console.error(err);
-        Alert.alert('Error', 'Product not added');
+        Alert.alert('Error', 'Product not updated');
       }
     } else {
       Alert.alert('Error', 'Please fill all the required fields');
     }
   };
-
-  const [title, setTitle] = useState('');
-  const [price, setPrice] = useState('');
-  const [qunatity, setQunatity] = useState('');
-  const [description, setDescription] = useState('');
-  const [productImage, setProductImage] = useState('');
-  const [beforeImage, setBeforeImage] = useState('Add Image');
+  
 
   const handleImagePick = () => {
     const options = {
@@ -214,8 +255,8 @@ const AddProduct = () => {
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.buttonSubmission}
-              onPress={handleSubmit}>
-              <Text style={styles.buttonText2}>Add Product</Text>
+              onPress={handleUpdate}>
+              <Text style={styles.buttonText2}>Update Product</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -224,7 +265,7 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
+export default UpdateProduct;
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -233,7 +274,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderColor: '#FFA800',
     padding: 10,
-    marginBottom: 220,
+    marginBottom: 200,
   },
   inputBox: {fontWeight: 'bold', width: '98%'},
   descriptionInput: {
