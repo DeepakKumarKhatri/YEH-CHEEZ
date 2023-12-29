@@ -7,7 +7,7 @@ import {
   Image,
   Alert,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect,useContext} from 'react';
 import {
   TextInput,
   DefaultTheme,
@@ -18,8 +18,11 @@ import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import {v4 as uuidv4} from 'uuid';
 import DropDownPicker from 'react-native-dropdown-picker';
+import {Context} from '../context/Context';
 
 const AddProduct = () => {
+  const {userAuth, favCount} = useContext(Context);
+  const [user, setUser] = userAuth;
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -45,30 +48,6 @@ const AddProduct = () => {
     return categoriesCollection._data;
   };
   useEffect(() => {}, [productImage]);
-
-  // const getCircularReplacer = () => {
-  //   const seen = new WeakSet();
-  //   return (key, value) => {
-  //     if (typeof value === 'object' && value !== null) {
-  //       if (seen.has(value)) {
-  //         return;
-  //       }
-  //       seen.add(value);
-  //     }
-  //     return value;
-  //   };
-  // };
-
-  // const getData = async () => {
-  //   const usersCollection = await firestore()
-  //     .collection('Products')
-  //     .doc('w1BxcMitxV28c4mR4SqF')
-  //     .get();
-  //   console.log(
-  //     'DEEPAK DATAAAAA: ' +
-  //       JSON.stringify(usersCollection, getCircularReplacer()),
-  //   );
-  // };
 
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -101,6 +80,7 @@ const AddProduct = () => {
         productDescription: description,
         image: imagePath,
         productCateogory: value,
+        user: user.uid
       };
 
       try {

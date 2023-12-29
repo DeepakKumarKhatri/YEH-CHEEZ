@@ -1,8 +1,10 @@
 import {useNavigation} from '@react-navigation/native';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import {ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import {DataTable} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import firestore from '@react-native-firebase/firestore';
+import {Context} from '../context/Context';
+import TableRow from '../components/molecules/TableRow';
 
 const OrdersDone = () => {
   const navigation = useNavigation();
@@ -12,44 +14,37 @@ const OrdersDone = () => {
     numberOfItemsPerPageList[0],
   );
 
-  const [items] = useState([
-    {
-      key: 1,
-      name: 'Cupcake',
-      calories: 356,
-      fat: 16,
-    },
-    {
-      key: 2,
-      name: 'Eclair',
-      calories: 262,
-      fat: 16,
-    },
-    {
-      key: 3,
-      name: 'Frozen yogurt',
-      calories: 159,
-      fat: 6,
-    },
-    {
-      key: 4,
-      name: 'Gingerbread',
-      calories: 305,
-      fat: 3.7,
-    },
-    {
-      key: 5,
-      name: 'Gingerbread',
-      calories: 305,
-      fat: 3.7,
-    },
-    {
-      key: 6,
-      name: 'Gingerbread',
-      calories: 305,
-      fat: 3.7,
-    },
-  ]);
+  const [items, setItems] = useState([]);
+
+  const {userAuth, favCount} = useContext(Context);
+    const [user, setUser] = userAuth;
+    const [orders, setOrders] = useState([]);
+    useEffect(() => {
+      const fetchOrders = async () => {
+        try {
+          await getOrders();
+        } catch (error) {
+          console.error('Error fetching orders:', error);
+        }
+      };
+      fetchOrders();
+    }, [orders]);
+
+    const getOrders = async () => {
+        try {
+
+          const userDoc = await firestore().collection('Users').doc(user.uid).get();
+          const userData = userDoc.data();
+          let userPruchases = userData.sales || [];
+          console.log(userPruchases)
+          userPruchases = userPruchases.filter((item) => {
+            return item.shipped
+          })
+          setItems(userPruchases);
+        } catch (error) {
+          console.error('Error fetching products:', error);
+        }
+    };
 
   const from = page * itemsPerPage;
   const to = Math.min((page + 1) * itemsPerPage, items.length);
@@ -62,38 +57,24 @@ const OrdersDone = () => {
       <DataTable>
         <DataTable.Header>
           <DataTable.Title textStyle={{color: '#2D4990'}}>
-            Title
+            Order ID
           </DataTable.Title>
           <DataTable.Title textStyle={{color: '#2D4990'}} numeric>
-            Price
+            Amount
           </DataTable.Title>
           <DataTable.Title textStyle={{color: '#2D4990'}} numeric>
-            Quantity
+            Items
+          </DataTable.Title>
+          <DataTable.Title textStyle={{color: '#2D4990'}} numeric>
+            Date
           </DataTable.Title>
           <DataTable.Title textStyle={{color: '#2D4990'}} numeric>
             Actions
           </DataTable.Title>
         </DataTable.Header>
 
-        {items.slice(from, to).map(item => (
-          <DataTable.Row key={item.key}>
-            <DataTable.Cell textStyle={{color: '#2D4990'}}>
-              {item.name}
-            </DataTable.Cell>
-            <DataTable.Cell textStyle={{color: '#2D4990'}} numeric>
-              {item.calories}
-            </DataTable.Cell>
-            <DataTable.Cell textStyle={{color: '#2D4990'}} numeric>
-              {item.fat}
-            </DataTable.Cell>
-            <DataTable.Cell style={{justifyContent: 'flex-end'}}>
-              <TouchableOpacity
-                style={[styles.roundIcon, styles.editIcon]}
-                onPress={() => navigation.navigate('OrderDetail')}>
-                <Icon name="eye" size={20} color="#FFFFFF" />
-              </TouchableOpacity>
-            </DataTable.Cell>
-          </DataTable.Row>
+        {items.slice(from, to).map((item, index) => (
+          <TableRow props={item} index={index} />
         ))}
 
         <DataTable.Pagination
