@@ -72,7 +72,7 @@ const Search = () => {
             placeholder="Search"
             right={
               <TextInput.Icon icon="account-search" onPress={handleSearch} />
-            } // Corrected line
+            }
             placeholderTextColor={'black'}
             style={{
               borderWidth: 3,
@@ -88,9 +88,10 @@ const Search = () => {
           />
         </View>
       </View>
-      {console.log(searchedProduct)}
       {searchedProduct && (
-        <TouchableOpacity style={{flexDirection: 'row', marginTop: 10}}>
+        <TouchableOpacity
+          style={{flexDirection: 'row', marginTop: 10}}
+          onPress={() => navigation.navigate('Product', {title: searchText})}>
           <Image
             source={{
               uri: searchedProduct.image,

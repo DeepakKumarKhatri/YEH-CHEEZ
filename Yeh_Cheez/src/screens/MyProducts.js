@@ -15,7 +15,7 @@ const MyProducts = () => {
         backgroundColor: 'white',
         height: 80,
       },
-      headerTintColor: '#2D4990', 
+      headerTintColor: '#2D4990',
       headerTitleStyle: {
         fontSize: 32,
         color: '#2D4990',
@@ -23,7 +23,9 @@ const MyProducts = () => {
     });
   }, [navigation]);
   const [page, setPage] = useState(0);
-  const [numberOfItemsPerPageList] = useState([2, 3, 4, 6]);
+  const [numberOfItemsPerPageList] = useState([
+    2, 3, 4, 6, 8, 10, 12, 14, 16, 18, 20,
+  ]);
   const [itemsPerPage, onItemsPerPageChange] = useState(
     numberOfItemsPerPageList[0],
   );
@@ -34,10 +36,10 @@ const MyProducts = () => {
   const to = Math.min((page + 1) * itemsPerPage, items.length);
 
   useEffect(() => {
-    fetchProducts(); 
+    fetchProducts();
   }, [itemsPerPage]);
 
-  const handleDeleteProduct = async (title) => {
+  const handleDeleteProduct = async title => {
     try {
       const querySnapshot = await firestore()
         .collection('Products')
@@ -50,7 +52,7 @@ const MyProducts = () => {
         await firestore().collection('Products').doc(documentId).delete();
 
         Alert.alert('Success', `Product deleted successfully`);
-        fetchProducts(); 
+        fetchProducts();
       } else {
         console.warn('Product not found');
       }
@@ -72,7 +74,7 @@ const MyProducts = () => {
         });
       });
 
-      setItems(products); 
+      setItems(products);
     } catch (error) {
       console.error('Error fetching product details:', error);
     }
