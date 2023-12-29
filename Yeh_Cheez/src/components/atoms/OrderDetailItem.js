@@ -1,18 +1,19 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 
-const OrderDetailItem = () => {
+const OrderDetailItem = ({prop}) => {
+  console.log(prop);
   return (
     <View style={styles.mainContainer}>
-      <Text style={styles.tableContentRow}>Item1</Text>
+      <Text style={styles.tableContentRow}>{prop.productTitle}</Text>
       <View style={styles.iconParent}>
         <Text
           style={[styles.tableContentRow, {paddingRight: 8, paddingLeft: 8}]}>
-          0
+          {prop.quantity}
         </Text>
       </View>
       <Text style={[styles.tableContentRow, {color: '#E29500'}]}>
-        500
+      {prop.totalAmount}
       </Text>
     </View>
   );

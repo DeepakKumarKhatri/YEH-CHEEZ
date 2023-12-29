@@ -75,7 +75,7 @@ const UserProfileFunction = () => {
           />
           <UserMenuCard
             cardTitle={'My Purchases'}
-            functionPressed={() => navigation.navigate('DrawerNavigator',{screen:'Purchases'})}
+            functionPressed={() => navigation.navigate('Purchases')}
           />
         </View>
 

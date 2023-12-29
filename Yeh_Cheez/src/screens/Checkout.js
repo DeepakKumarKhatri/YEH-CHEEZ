@@ -19,17 +19,24 @@ const Checkout = ({route}) => {
   const [comm, setComm] = useState('');
   const navigation = useNavigation();
 
+  const date = new Date();
+  
+
   const placeOrder = async () => {
     if (address != '' && phone != '' && comm != '') {
         const userDoc = await firestore().collection('Users').doc(user.uid).get();
         const userData = userDoc.data();
         const currentBalance = userData.balance;
+        const currentOrder = userData.cart;
+        const purcheses = userData.purcheses || [];
+        purcheses.push({...currentOrder});
         await firestore()
         .collection('Users')
         .doc(user.uid)
         .update({
           balance: parseInt(currentBalance) + parseFloat(comm),
           cart : [],
+          purcheses: purcheses
         });
         setCartItems(0);
         navigation.navigate("CheckOutModal");

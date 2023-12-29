@@ -1,57 +1,42 @@
 import { FlatList } from "react-native";
 import OrderItem from "../components/molecules/OrderItem";
-
-const item = {
-    id: '643545',
-    amount: 1000,
-    noOfItems: 3,
-    date: '12/11/2023'
-}
-const items = [
-    {
-        id: '643545',
-        amount: 1000,
-        noOfItems: 3,
-        date: '12/11/2023'
-    },
-    {
-        id: '643543',
-        amount: 1000,
-        noOfItems: 3,
-        date: '12/11/2023'
-    },
-    {
-        id: '643523',
-        amount: 1000,
-        noOfItems: 3,
-        date: '12/11/2023'
-    },
-    {
-        id: '622545',
-        amount: 1000,
-        noOfItems: 3,
-        date: '12/11/2023'
-    },
-    {
-        id: '543545',
-        amount: 1000,
-        noOfItems: 3,
-        date: '12/11/2023'
-    },
-    {
-        id: '223545',
-        amount: 1000,
-        noOfItems: 3,
-        date: '12/11/2023'
-    }
-]
+import firestore from '@react-native-firebase/firestore';
+import {Context} from '../context/Context';
+import { useNavigation } from "@react-navigation/native";
+import { useContext, useState, useEffect } from "react";
 
 const Purchases = () => {
+    const navigation = useNavigation();
+    const {userAuth, favCount} = useContext(Context);
+    const [user, setUser] = userAuth;
+    const [orders, setOrders] = useState([]);
+    useEffect(() => {
+      const fetchOrders = async () => {
+        try {
+          await getOrders();
+        } catch (error) {
+          console.error('Error fetching orders:', error);
+        }
+      };
+      fetchOrders();
+    }, []);
+
+    const getOrders = async () => {
+        try {
+
+          const userDoc = await firestore().collection('Users').doc(user.uid).get();
+          const userData = userDoc.data();
+          const userPruchases = userData.purcheses || [];
+          setOrders(userPruchases);
+        } catch (error) {
+          console.error('Error fetching products:', error);
+        }
+      };
     return(
         <FlatList 
-            data={items}
-            renderItem={({item}) => <OrderItem props={item} button={0} />}
-            keyExtractor={item => item.id}
+            data={orders}
+            renderItem={({item, index }) => <OrderItem props={item} index={index} button={0} />}
+            keyExtractor={(item, index) => index.toString()}
         />
     );
 }

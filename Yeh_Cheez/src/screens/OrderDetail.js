@@ -5,17 +5,47 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import OrderDetailItem from '../components/atoms/OrderDetailItem';
 
-const OrderDetail = () => {
+const OrderDetail = ({route}) => {
+  const [id, setID] = useState('');
+  const [items, setItems] = useState(0);
+  const [amount, setAmount] = useState(0);
+  const props = route.params.props;
+  useEffect(() => {
+    const calculateSum = (inputObject) => {
+      let sumQuantities = 0;
+      let sumTotalAmounts = 0;
+      let concatenatedTitles = "";
+    
+      // Iterate over the object keys
+      Object.keys(inputObject).forEach((key) => {
+        const item = inputObject[key];
+        sumQuantities += item.quantity;
+        sumTotalAmounts += parseInt(item.totalAmount, 10); // Convert totalAmount to integer for summation
+        concatenatedTitles += item.productTitle + " ";
+      });
+      setID(concatenatedTitles.trim());
+      setAmount(sumTotalAmounts);
+      setItems(sumQuantities)
+    
+      return {
+        sumQuantities,
+        sumTotalAmounts,
+        concatenatedTitles: concatenatedTitles.trim(), // Trim to remove extra space at the end
+      };
+    };
+    calculateSum(props);
+  }, []);
+
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.mainContainer}>
         <View
           style={{margin: 20, flexDirection: 'row', justifyContent: 'center'}}>
           <Text style={styles.title}>ORDER ID: </Text>
-          <Text style={[styles.title, {color: '#E29500'}]}>3532</Text>
+          <Text style={[styles.title, {color: '#E29500'}]}>{id}</Text>
         </View>
 
         <View style={styles.footerContainer}>
@@ -24,8 +54,8 @@ const OrderDetail = () => {
             <Text style={styles.footerText1}>Rs</Text>
           </View>
           <View>
-            <Text style={styles.footerText2}>7</Text>
-            <Text style={styles.footerText2}>10,000</Text>
+            <Text style={styles.footerText2}>{items}</Text>
+            <Text style={styles.footerText2}>{amount}</Text>
           </View>
         </View>
 
@@ -36,10 +66,8 @@ const OrderDetail = () => {
             <Text style={styles.tableHeaderRow}>Price</Text>
           </View>
 
-          <OrderDetailItem />
-          <OrderDetailItem />
-          <OrderDetailItem />
-          <OrderDetailItem />
+          {Object.keys(props).map((key) => <OrderDetailItem prop={props[key]}  />)}
+
         </View>
       </View>
     </ScrollView>
