@@ -2,7 +2,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
@@ -21,10 +20,12 @@ const OrderDetail = ({route}) => {
     
       // Iterate over the object keys
       Object.keys(inputObject).forEach((key) => {
-        const item = inputObject[key];
-        sumQuantities += item.quantity;
-        sumTotalAmounts += parseInt(item.totalAmount, 10); // Convert totalAmount to integer for summation
-        concatenatedTitles += item.productTitle + " ";
+        if (key != 'shipped') {
+          const item = inputObject[key];
+          sumQuantities += item.quantity;
+          sumTotalAmounts += parseInt(item.totalAmount, 10); // Convert totalAmount to integer for summation
+          concatenatedTitles += item.productTitle + " ";
+        }
       });
       setID(concatenatedTitles.trim());
       setAmount(sumTotalAmounts);

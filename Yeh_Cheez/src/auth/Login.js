@@ -11,9 +11,9 @@ import {
 import React, {useState, useContext} from 'react';
 import Icon from 'react-native-vector-icons/dist/FontAwesome5';
 import {Context} from '../context/Context';
-import auth from '@react-native-firebase/auth'; 
+import auth from '@react-native-firebase/auth';
 
-const Login = ({navigation,route}) => {
+const Login = ({navigation, route}) => {
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [toggleIcon, setToggleIcon] = useState('times');
@@ -74,25 +74,10 @@ const Login = ({navigation,route}) => {
           secureTextEntry={true}
         />
       </KeyboardAvoidingView>
-      <View style={{flexDirection: 'row', marginTop: 15}}>
-        <TouchableOpacity onPress={iconValidity} style={styles.iconHolder}>
-          <Icon name={toggleIcon} size={18} color="black" />
-        </TouchableOpacity>
 
-        <Text style={styles.text1}>Remember Me</Text>
-      </View>
       <View>
         <TouchableOpacity style={styles.button1} onPress={handleLogin}>
           <Text style={styles.buttonText1}>Log In</Text>
-        </TouchableOpacity>
-
-        <Text style={styles.text2}>OR</Text>
-
-        <TouchableOpacity style={styles.button2}>
-          <Icon name="google" size={20} color="#2D4990" />
-          <Text style={styles.buttonText2}>
-            Log in with your Google account
-          </Text>
         </TouchableOpacity>
       </View>
       <View style={styles.questionContainer}>
@@ -126,7 +111,7 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     paddingLeft: 15,
     marginTop: 30,
-    color: 'black'
+    color: 'black',
   },
   iconHolder: {
     borderWidth: 1,

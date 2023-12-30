@@ -16,7 +16,7 @@ const OrderAnalytics = () => {
       },
       headerTintColor: '#2D4990',
       headerTitleStyle: {
-        fontSize: 27,
+        fontSize: 25,
         color: '#2D4990',
       },
     });

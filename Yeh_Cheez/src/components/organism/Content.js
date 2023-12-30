@@ -30,7 +30,7 @@ const Content = () => {
       style={styles.container}
       contentContainerStyle={styles.scrollBottom}
       showsVerticalScrollIndicator={false}>
-      {categoryItems.map(category => <CategoryRow title={category} />)}
+      {categoryItems.map((category, index) => <CategoryRow title={category} id={index} />)}
     </View>
   );
 };

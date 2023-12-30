@@ -7,7 +7,7 @@ import {
   Image,
   Alert,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect,useContext} from 'react';
 import {
   TextInput,
   DefaultTheme,
@@ -18,26 +18,28 @@ import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import {v4 as uuidv4} from 'uuid';
 import DropDownPicker from 'react-native-dropdown-picker';
+import {Context} from '../context/Context';
 import { useNavigation } from '@react-navigation/native';
 
 const AddProduct = () => {
+  const {userAuth, favCount} = useContext(Context);
+  const [user, setUser] = userAuth;
   const navigation = useNavigation();
   useEffect(() => {
     navigation.setOptions({
-      title: 'Add PRODUCT',
+      title: 'ADD PRODUCTS',
       headerTitleAlign: 'center',
       headerStyle: {
         backgroundColor: 'white',
         height: 80,
       },
-      headerTintColor: '#2D4990', 
+      headerTintColor: '#2D4990',
       headerTitleStyle: {
-        fontSize: 32,
+        fontSize: 28,
         color: '#2D4990',
       },
     });
   }, [navigation]);
-  
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -95,6 +97,7 @@ const AddProduct = () => {
         productDescription: description,
         image: imagePath,
         productCateogory: value,
+        user: user.uid
       };
 
       try {

@@ -14,6 +14,12 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-Yeh_Cheez-Yeh_CheezTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-Yeh_Cheez-Yeh_CheezTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		A524A048C3A643FE8C7834CB /* KohSantepheap-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E7CBA8C073EC45C5BD7732B3 /* KohSantepheap-Black.ttf */; };
+		B4F483382303454AA9770B49 /* KohSantepheap-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9FD360AB609849F2B3D7C23F /* KohSantepheap-Bold.ttf */; };
+		F33246CC4CB942B29239FCF0 /* KohSantepheap-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 949776798A6B4B30B660A9DB /* KohSantepheap-Light.ttf */; };
+		C40F1855C7194F4493CB376A /* KohSantepheap-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D60F3E4E81DD40B28303F0CB /* KohSantepheap-Regular.ttf */; };
+		1623BCE952AF414CB56930F4 /* KohSantepheap-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 933B9B4AADA348D188AA7DC2 /* KohSantepheap-Thin.ttf */; };
+		8AEC3C70FE1C4B8CB1FC1075 /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1683D0861701408C88BF0385 /* OFL.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +50,12 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Yeh_Cheez/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-Yeh_Cheez-Yeh_CheezTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yeh_Cheez-Yeh_CheezTests.release.xcconfig"; path = "Target Support Files/Pods-Yeh_Cheez-Yeh_CheezTests/Pods-Yeh_Cheez-Yeh_CheezTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		E7CBA8C073EC45C5BD7732B3 /* KohSantepheap-Black.ttf */ = {isa = PBXFileReference; name = "KohSantepheap-Black.ttf"; path = "../src/assets/fonts/KohSantepheap-Black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		9FD360AB609849F2B3D7C23F /* KohSantepheap-Bold.ttf */ = {isa = PBXFileReference; name = "KohSantepheap-Bold.ttf"; path = "../src/assets/fonts/KohSantepheap-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		949776798A6B4B30B660A9DB /* KohSantepheap-Light.ttf */ = {isa = PBXFileReference; name = "KohSantepheap-Light.ttf"; path = "../src/assets/fonts/KohSantepheap-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D60F3E4E81DD40B28303F0CB /* KohSantepheap-Regular.ttf */ = {isa = PBXFileReference; name = "KohSantepheap-Regular.ttf"; path = "../src/assets/fonts/KohSantepheap-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		933B9B4AADA348D188AA7DC2 /* KohSantepheap-Thin.ttf */ = {isa = PBXFileReference; name = "KohSantepheap-Thin.ttf"; path = "../src/assets/fonts/KohSantepheap-Thin.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		1683D0861701408C88BF0385 /* OFL.txt */ = {isa = PBXFileReference; name = "OFL.txt"; path = "../src/assets/fonts/OFL.txt"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +134,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				EF824365C9274013B2F4DDF8 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -147,6 +160,20 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		EF824365C9274013B2F4DDF8 /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				E7CBA8C073EC45C5BD7732B3 /* KohSantepheap-Black.ttf */,
+				9FD360AB609849F2B3D7C23F /* KohSantepheap-Bold.ttf */,
+				949776798A6B4B30B660A9DB /* KohSantepheap-Light.ttf */,
+				D60F3E4E81DD40B28303F0CB /* KohSantepheap-Regular.ttf */,
+				933B9B4AADA348D188AA7DC2 /* KohSantepheap-Thin.ttf */,
+				1683D0861701408C88BF0385 /* OFL.txt */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -243,6 +270,12 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				A524A048C3A643FE8C7834CB /* KohSantepheap-Black.ttf in Resources */,
+				B4F483382303454AA9770B49 /* KohSantepheap-Bold.ttf in Resources */,
+				F33246CC4CB942B29239FCF0 /* KohSantepheap-Light.ttf in Resources */,
+				C40F1855C7194F4493CB376A /* KohSantepheap-Regular.ttf in Resources */,
+				1623BCE952AF414CB56930F4 /* KohSantepheap-Thin.ttf in Resources */,
+				8AEC3C70FE1C4B8CB1FC1075 /* OFL.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

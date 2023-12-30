@@ -76,7 +76,9 @@ const Search = () => {
             placeholderTextColor={'black'}
             style={{
               borderWidth: 3,
-              borderRadius: 10,
+              borderTopEndRadius: 20,
+              borderTopLeftRadius: 20,
+              borderRadius: 20,
               width: '85%',
               paddingLeft: 20,
               fontSize: 18,

@@ -1,5 +1,5 @@
 import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {
   TextInput,
   DefaultTheme,
@@ -7,39 +7,62 @@ import {
 } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import {Context} from '../context/Context';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Checkout = ({route}) => {
+  const navigation = useNavigation();
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => <Text style={styles.headerTitle}>CHECKOUT</Text>,
+      headerTitleAlign: 'center',
+      headerBackVisible: false,
+      headerLeft: () => (
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon
+            name="arrow-left"
+            size={30}
+            color="#2D4990"
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+      ),
+      contentStyle: {
+        backgroundColor: 'white',
+        borderTopWidth: 2,
+        borderTopColor: '#D4A065',
+      },
+      headerShadowVisible: false,
+    });
+  }, [navigation]);
   const {userAuth, cartCount} = useContext(Context);
   const [user, setUser] = userAuth;
-  
+
   const [cartItems, setCartItems] = cartCount;
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState('');
   const [comm, setComm] = useState('');
-  const navigation = useNavigation();
 
   const date = new Date();
-  
 
   const placeOrder = async () => {
     if (address != '' && phone != '' && comm != '') {
-        const userDoc = await firestore().collection('Users').doc(user.uid).get();
-        const userData = userDoc.data();
-        const currentBalance = userData.balance;
-        const currentOrder = userData.cart;
-        const purcheses = userData.purcheses || [];
-        purcheses.push({...currentOrder});
-        await firestore()
+      const userDoc = await firestore().collection('Users').doc(user.uid).get();
+      const userData = userDoc.data();
+      const currentBalance = userData.balance;
+      const currentOrder = userData.cart;
+      const purcheses = userData.purcheses || [];
+      purcheses.push({...currentOrder});
+      await firestore()
         .collection('Users')
         .doc(user.uid)
         .update({
           balance: parseInt(currentBalance) + parseFloat(comm),
-          cart : [],
-          purcheses: purcheses
+          cart: [],
+          purcheses: purcheses,
         });
-        setCartItems(0);
-        navigation.navigate("CheckOutModal");
+      setCartItems(0);
+      navigation.navigate('CheckOutModal');
     } else {
       Alert.alert('Error', 'Please fill fields!');
     }
@@ -79,6 +102,7 @@ const Checkout = ({route}) => {
           mode="outlined"
           label="Your Commission"
           placeholder="Your Commission"
+          keyboardType="numeric"
           onChangeText={text => setComm(text)}
           value={comm}
           style={styles.inputBox}
@@ -136,5 +160,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 30,
+  },
+  headerTitle: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#2D4990',
+    padding: 25,
   },
 });

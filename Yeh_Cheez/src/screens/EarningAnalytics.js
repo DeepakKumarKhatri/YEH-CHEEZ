@@ -16,7 +16,7 @@ const EarningAnalytics = () => {
       },
       headerTintColor: '#2D4990',
       headerTitleStyle: {
-        fontSize: 30,
+        fontSize: 28,
         color: '#2D4990',
       },
     });

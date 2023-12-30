@@ -1,43 +1,61 @@
 import {useNavigation} from '@react-navigation/native';
-import { useEffect, useState } from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Alert, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {useContext, useState, useEffect} from 'react';
+import {Context} from '../../context/Context';
+import firestore from '@react-native-firebase/firestore';
 
 const OrderItem = ({props, button, index}) => {
   const navigation = useNavigation();
+  const {userAuth, favCount} = useContext(Context);
+  const [user, setUser] = userAuth;
   const [id, setID] = useState('');
   const [items, setItems] = useState(0);
   const [amount, setAmount] = useState(0);
 
   useEffect(() => {
-    const calculateSum = (inputObject) => {
+    const calculateSum = inputObject => {
       let sumQuantities = 0;
       let sumTotalAmounts = 0;
-      let concatenatedTitles = "";
-    
-      // Iterate over the object keys
-      Object.keys(inputObject).forEach((key) => {
-        const item = inputObject[key];
-        sumQuantities += item.quantity;
-        sumTotalAmounts += parseInt(item.totalAmount, 10); // Convert totalAmount to integer for summation
-        concatenatedTitles += item.productTitle + " ";
+      let concatenatedTitles = '';
+
+      Object.keys(inputObject).forEach(key => {
+        if (key != 'shipped') {
+          const item = inputObject[key];
+          sumQuantities += item.quantity;
+          sumTotalAmounts += parseInt(item.totalAmount, 10);
+          concatenatedTitles += item.productTitle + ' ';
+        }
       });
       setID(concatenatedTitles.trim());
       setAmount(sumTotalAmounts);
-      setItems(sumQuantities)
-    
+      setItems(sumQuantities);
+
       return {
         sumQuantities,
         sumTotalAmounts,
-        concatenatedTitles: concatenatedTitles.trim(), // Trim to remove extra space at the end
+        concatenatedTitles: concatenatedTitles.trim(),
       };
     };
 
     calculateSum(props);
   }, []);
 
-  let data = props[0];
+  const markShipped = async () => {
+    const userDoc = await firestore().collection('Users').doc(user.uid).get();
+    const userData = userDoc.data();
+    const sales = userData.sales || [];
+    sales[index].shipped = true;
+    await firestore()
+      .collection('Users')
+      .doc(user.uid)
+      .update({
+        sales: sales,
+      });
+      Alert.alert("Success", "Mark Shipped!");
+  };
+
   const date = new Date();
   let day = date.getDate();
   let month = date.getMonth() + 1;
@@ -65,7 +83,9 @@ const OrderItem = ({props, button, index}) => {
             <View style={styles.capSmall}>
               <Text style={styles.whiteText}>Pending</Text>
             </View>
-            <TouchableOpacity style={styles.capLarger}>
+            <TouchableOpacity
+              style={styles.capLarger}
+              onPress={() => markShipped()}>
               <Text style={styles.whiteText}>Mark Shipped</Text>
             </TouchableOpacity>
           </View>
@@ -76,10 +96,12 @@ const OrderItem = ({props, button, index}) => {
       {button == 0 ? (
         <TouchableOpacity
           style={styles.detailsView}
-          onPress={() => navigation.navigate('OrderDetail', {
-            index: index,
-            props: props
-          })}>
+          onPress={() =>
+            navigation.navigate('OrderDetail', {
+              index: index,
+              props: props,
+            })
+          }>
           <Text style={[styles.normalColor, styles.underLine]}>
             View Details <Icon name="angle-right" size={14} color="#2D4990" />
             <Icon name="angle-right" size={14} color="#2D4990" />

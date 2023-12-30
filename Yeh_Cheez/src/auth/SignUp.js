@@ -167,6 +167,7 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     paddingLeft: 15,
     marginTop: 30,
+    color: 'black',
   },
   iconHolder: {
     borderWidth: 1,

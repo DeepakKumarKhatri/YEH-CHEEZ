@@ -27,7 +27,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         fontSize: 30,
         fontWeight: 'bold',
-        color: 'white'
+        color: 'white',
+        fontFamily: 'KohSantepheap-Regular'
     }
 });
 

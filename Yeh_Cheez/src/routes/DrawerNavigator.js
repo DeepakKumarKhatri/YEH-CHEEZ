@@ -58,8 +58,8 @@ const CustomDrawerContent = ({navigation, state, ...props}) => {
       <CustomDrawerItem
         label="Pending Orders"
         icon="spinner"
-        onPress={() => navigation.navigate('PendingOrders')}
-        focused={focusedRouteName === 'PendingOrders'}
+        onPress={() => navigation.navigate('OrdersPending')}
+        focused={focusedRouteName === 'OrdersPending'}
       />
       <CustomDrawerItem
         label="Orders Done"

@@ -1,0 +1,29 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/KohSantepheap-Black.ttf",
+      "sha1": "5d6807fb1d5f833450e472d6ec6a4a4d76f68fe5"
+    },
+    {
+      "path": "src/assets/fonts/KohSantepheap-Bold.ttf",
+      "sha1": "c4cc28c59ba4780f78fe2f50c7dceeb422ba77c9"
+    },
+    {
+      "path": "src/assets/fonts/KohSantepheap-Light.ttf",
+      "sha1": "14631d976c2c27591b82153015e125dedcc652f9"
+    },
+    {
+      "path": "src/assets/fonts/KohSantepheap-Regular.ttf",
+      "sha1": "0f3b694a5fbc2613a9c408ee5e95f5f147ddcfd8"
+    },
+    {
+      "path": "src/assets/fonts/KohSantepheap-Thin.ttf",
+      "sha1": "056dcf92e9402ecfd9c49f3e2a350828e31343c7"
+    },
+    {
+      "path": "src/assets/fonts/OFL.txt",
+      "sha1": "674fa66daad40107417b400d7f5aa37f8758bcbe"
+    }
+  ]
+}

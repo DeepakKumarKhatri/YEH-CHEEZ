@@ -2,7 +2,6 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 
 const OrderDetailItem = ({prop}) => {
-  console.log(prop);
   return (
     <View style={styles.mainContainer}>
       <Text style={styles.tableContentRow}>{prop.productTitle}</Text>

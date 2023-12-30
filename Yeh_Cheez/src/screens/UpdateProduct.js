@@ -18,8 +18,33 @@ import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import {v4 as uuidv4} from 'uuid';
 import DropDownPicker from 'react-native-dropdown-picker';
+import {useNavigation} from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const UpdateProduct = ({route, navigation}) => {
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => <Text style={styles.headerTitle}>UPDATE PRODUCT</Text>,
+      headerTitleAlign: 'center',
+      headerBackVisible: false,
+      headerLeft: () => (
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon
+            name="arrow-left"
+            size={30}
+            color="#2D4990"
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+      ),
+      contentStyle: {
+        backgroundColor: 'white',
+        borderTopWidth: 2,
+        borderTopColor: '#D4A065',
+      },
+      headerShadowVisible: false,
+    });
+  }, [navigation]);
   useEffect(() => {
     getData();
   }, []);
@@ -125,28 +150,25 @@ const UpdateProduct = ({route, navigation}) => {
       productImage !== ''
     ) {
       const imagePath = await productImageHandle(uuidv4());
-  
+
       try {
         const querySnapshot = await firestore()
           .collection('Products')
           .where('productTitle', '==', route.params.title)
           .get();
-  
+
         if (!querySnapshot.empty) {
           const documentId = querySnapshot.docs[0].id;
-  
-          await firestore()
-            .collection('Products')
-            .doc(documentId)
-            .update({
-              productTitle: title,
-              productPrice: price,
-              productQunatity: qunatity,
-              productDescription: description,
-              image: imagePath,
-              productCateogory: value,
-            });
-  
+
+          await firestore().collection('Products').doc(documentId).update({
+            productTitle: title,
+            productPrice: price,
+            productQunatity: qunatity,
+            productDescription: description,
+            image: imagePath,
+            productCateogory: value,
+          });
+
           Alert.alert('Success', `Product updated successfully`);
         } else {
           console.warn('Product not found');
@@ -159,7 +181,6 @@ const UpdateProduct = ({route, navigation}) => {
       Alert.alert('Error', 'Please fill all the required fields');
     }
   };
-  
 
   const handleImagePick = () => {
     const options = {
@@ -319,4 +340,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   buttonText2: {color: 'white', fontSize: 15, textAlign: 'center'},
+  headerTitle: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#2D4990',
+    padding: 25,
+  },
 });
